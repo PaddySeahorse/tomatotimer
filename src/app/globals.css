@@ -50,6 +50,9 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --timer-focus-bg: #FFF5F5;
+  --timer-shortbreak-bg: #F0FFF4;
+  --timer-longbreak-bg: #F0FFFE;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);

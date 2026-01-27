@@ -132,9 +132,9 @@ export default function Pomodoro() {
 
   // 配置
   const getTimerConfig = () => ({
-    focus: { time: customTime * 60, color: '#FF6B6B', label: '专注时间' },
-    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: '短休息' },
-    longBreak: { time: 15 * 60, color: '#6C5CE7', label: '长休息' },
+    focus: { time: customTime * 60, color: '#FF6B6B', label: '专注时间', bgColor: 'var(--timer-focus-bg)' },
+    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: '短休息', bgColor: 'var(--timer-shortbreak-bg)' },
+    longBreak: { time: 15 * 60, color: '#95E1D3', label: '长休息', bgColor: 'var(--timer-longbreak-bg)' },
   });
   
   const timerConfig = getTimerConfig();
@@ -201,6 +201,14 @@ export default function Pomodoro() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [isFullscreen]);
+
+  // 当customTime变化时，更新focus模式的时间
+  useEffect(() => {
+    if (state === 'focus' && !isRunning) {
+      setTotalTime(customTime * 60);
+      setTimeLeft(customTime * 60);
+    }
+  }, [customTime, state, isRunning]);
 
   // 切换计时器状态
   const switchState = (newState: TimerState) => {
@@ -284,7 +292,7 @@ export default function Pomodoro() {
 
       {/* 全屏模式 */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center animate-fadeIn">
+        <div className="fixed inset-0 z-10 flex items-center justify-center animate-fadeIn" style={{ backgroundColor: timerConfig[state].bgColor, transition: 'background-color 0.5s ease-in-out' }}>
           <div className="relative z-20 flex flex-col items-center">
             {/* 放大的SVG圆环进度条 */}
             <div className="mb-8">
@@ -372,7 +380,7 @@ export default function Pomodoro() {
 
       {/* 普通模式 */}
       {!isFullscreen && (
-        <div className="relative z-10 container mx-auto px-4 py-8">
+        <div className="relative z-10 container mx-auto px-4 py-8" style={{ backgroundColor: timerConfig[state].bgColor, transition: 'background-color 0.5s ease-in-out' }}>
         {/* 头部 */}
         <header className="flex justify-between items-center mb-8">
           <div className="text-center flex-1">
@@ -652,79 +660,87 @@ export default function Pomodoro() {
                       }`}
                     >
                       {/* 任务名称行（始终显示） */}
-                      <div
-                        className={`flex items-center gap-3 p-4 cursor-pointer ${isExpanded ? 'pb-2' : ''}`}
-                        onClick={() => toggleTaskExpand(task.id)}
-                      >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleTask(task.id);
-                          }}
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                            task.completed
-                              ? 'bg-green-500 border-green-500 text-white'
-                              : theme === 'dark'
-                                ? 'border-gray-500 hover:border-rose-400'
-                                : 'border-gray-300 hover:border-rose-400'
-                          }`}
-                        >
-                          {task.completed && '✓'}
-                        </button>
-                        <span
-                          className={`flex-1 ${
-                            task.completed
-                              ? 'text-gray-400 line-through'
-                              : theme === 'dark'
-                                ? 'text-gray-200'
-                                : 'text-gray-800'
-                          }`}
-                        >
-                          {task.text}
-                        </span>
+                      <div className={`flex items-center justify-between p-4 ${isExpanded ? 'pb-2' : ''}`}>
+                        <div className="flex items-center gap-3 flex-1 cursor-pointer" onClick={() => toggleTaskExpand(task.id)}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleTask(task.id);
+                            }}
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                              task.completed
+                                ? 'bg-green-500 border-green-500 text-white'
+                                : theme === 'dark'
+                                  ? 'border-gray-500 hover:border-rose-400'
+                                  : 'border-gray-300 hover:border-rose-400'
+                            }`}
+                          >
+                            {task.completed && '✓'}
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <span
+                              className={`block truncate ${
+                                task.completed
+                                  ? 'text-gray-400 line-through'
+                                  : theme === 'dark'
+                                    ? 'text-gray-200'
+                                    : 'text-gray-800'
+                              }`}
+                            >
+                              {task.text}
+                            </span>
+                            {task.plannedTime && (
+                              <span className={`text-xs flex items-center gap-1 mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                                <AlarmIcon />
+                                {task.plannedTime}分钟
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* 开始按钮 - 始终可见 */}
+                        {!task.completed && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startTask(task);
+                            }}
+                            className="px-3 py-1 rounded-lg text-sm bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center gap-1 flex-shrink-0"
+                          >
+                            <PlayIcon />
+                            开始
+                          </button>
+                        )}
+                        
                         {/* 展开/折叠指示器 */}
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                          stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
-                          strokeWidth="2"
+                        <button
+                          onClick={() => toggleTaskExpand(task.id)}
+                          className={`ml-2 p-1 rounded-full hover:bg-gray-200/50 dark:hover:bg-gray-600/50 transition-colors flex-shrink-0`}
                         >
-                          <path d="M6 9L12 15L18 9" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                            stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+                            strokeWidth="2"
+                          >
+                            <path d="M6 9L12 15L18 9" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
                       </div>
                       
                       {/* 展开后的详细信息 */}
                       {isExpanded && (
                         <div className="px-4 pb-4 ml-9 border-t border-gray-200/50 dark:border-gray-600/50 pt-3">
-                          <div className="flex items-center gap-3">
-                            {task.plannedTime && (
-                              <span className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                                <AlarmIcon />
-                                {task.plannedTime}分钟
-                              </span>
-                            )}
-                            {task.note && (
-                              <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                                {task.note}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex gap-2 mt-3">
-                            {!task.completed && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  startTask(task);
-                                }}
-                                className="px-3 py-1 rounded-lg text-sm bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center gap-1"
-                              >
-                                <PlayIcon />
-                                开始
-                              </button>
-                            )}
+                          {task.note && (
+                            <div className="mb-3">
+                              <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>备注：</span>
+                              <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{task.note}</span>
+                            </div>
+                          )}
+                          <div className="flex gap-2">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();

@@ -132,9 +132,9 @@ export default function Pomodoro() {
 
   // 配置
   const getTimerConfig = () => ({
-    focus: { time: customTime * 60, color: '#FF6B6B', label: '专注时间' },
-    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: '短休息' },
-    longBreak: { time: 15 * 60, color: '#6C5CE7', label: '长休息' },
+    focus: { time: customTime * 60, color: '#FF6B6B', label: '专注时间', bgColor: '#FF6B6B' },
+    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: '短休息', bgColor: '#4ECDC4' },
+    longBreak: { time: 15 * 60, color: '#95E1D3', label: '长休息', bgColor: '#95E1D3' },
   });
   
   const timerConfig = getTimerConfig();
@@ -207,8 +207,15 @@ export default function Pomodoro() {
     setState(newState);
     setIsRunning(false);
     const config = getTimerConfig();
-    setTotalTime(config[newState].time);
-    setTimeLeft(config[newState].time);
+    
+    // 如果切换到专注模式，使用自定义时长；其他模式使用默认时长
+    if (newState === 'focus') {
+      setTotalTime(customTime * 60);
+      setTimeLeft(customTime * 60);
+    } else {
+      setTotalTime(config[newState].time);
+      setTimeLeft(config[newState].time);
+    }
   };
 
   // 格式化时间显示
@@ -280,7 +287,7 @@ export default function Pomodoro() {
   return (
     <>
       {/* 固定背景层 - 始终渲染，不随状态切换 */}
-      <Background theme={theme} />
+      <Background theme={theme} timerState={state} />
 
       {/* 全屏模式 */}
       {isFullscreen && (
@@ -651,11 +658,8 @@ export default function Pomodoro() {
                           : 'bg-white/50 hover:bg-white/80 border border-gray-200'
                       }`}
                     >
-                      {/* 任务名称行（始终显示） */}
-                      <div
-                        className={`flex items-center gap-3 p-4 cursor-pointer ${isExpanded ? 'pb-2' : ''}`}
-                        onClick={() => toggleTaskExpand(task.id)}
-                      >
+                      {/* 主任务行（始终显示） */}
+                      <div className={`flex items-center gap-3 p-4 ${isExpanded ? 'pb-2' : ''}`}>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -671,35 +675,65 @@ export default function Pomodoro() {
                         >
                           {task.completed && '✓'}
                         </button>
-                        <span
-                          className={`flex-1 ${
-                            task.completed
-                              ? 'text-gray-400 line-through'
-                              : theme === 'dark'
-                                ? 'text-gray-200'
-                                : 'text-gray-800'
-                          }`}
-                        >
-                          {task.text}
-                        </span>
+                        
+                        <div className="flex-1 flex items-center gap-3">
+                          <span
+                            className={`${
+                              task.completed
+                                ? 'text-gray-400 line-through'
+                                : theme === 'dark'
+                                  ? 'text-gray-200'
+                                  : 'text-gray-800'
+                            }`}
+                          >
+                            {task.text}
+                          </span>
+                          
+                          {/* 任务时长信息 */}
+                          {task.plannedTime && (
+                            <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                              {task.plannedTime}分钟
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* 开始按钮（始终显示） */}
+                        {!task.completed && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startTask(task);
+                            }}
+                            className="px-3 py-1.5 rounded-lg text-sm bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center gap-1 flex-shrink-0"
+                          >
+                            <PlayIcon />
+                            开始
+                          </button>
+                        )}
+                        
                         {/* 展开/折叠指示器 */}
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                          stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
-                          strokeWidth="2"
+                        <button
+                          onClick={() => toggleTaskExpand(task.id)}
+                          className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                         >
-                          <path d="M6 9L12 15L18 9" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                            stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+                            strokeWidth="2"
+                          >
+                            <path d="M6 9L12 15L18 9" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
                       </div>
                       
                       {/* 展开后的详细信息 */}
                       {isExpanded && (
                         <div className="px-4 pb-4 ml-9 border-t border-gray-200/50 dark:border-gray-600/50 pt-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 mb-3">
                             {task.plannedTime && (
                               <span className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                                 <AlarmIcon />
@@ -712,19 +746,7 @@ export default function Pomodoro() {
                               </span>
                             )}
                           </div>
-                          <div className="flex gap-2 mt-3">
-                            {!task.completed && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  startTask(task);
-                                }}
-                                className="px-3 py-1 rounded-lg text-sm bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center gap-1"
-                              >
-                                <PlayIcon />
-                                开始
-                              </button>
-                            )}
+                          <div className="flex gap-2">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();

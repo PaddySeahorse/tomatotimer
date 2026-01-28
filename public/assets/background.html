@@ -11,8 +11,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #fefcfb;
-            transition: background-color 0.3s ease;
+            background-color: #FFE5E5;
+            transition: background-color 0.8s ease-in-out;
         }
 
         #canvas {
@@ -32,6 +32,7 @@
 
         let width, height, particles;
         let currentTheme = 'light';
+        let currentTimerState = 'focus';
 
         // 色系配置
         const colorPalettes = {
@@ -49,6 +50,22 @@
             ]
         };
 
+        // 计时器状态背景色配置
+        const timerStateColors = {
+            focus: {
+                light: '#FFE5E5',  // 浅红色背景
+                dark: '#2D1B1B'     // 深红色背景
+            },
+            shortBreak: {
+                light: '#E5F9F7',  // 浅蓝色背景
+                dark: '#1B2D2B'    // 深蓝色背景
+            },
+            longBreak: {
+                light: '#E8F5E8',  // 浅绿色背景
+                dark: '#1B2D1B'    // 深绿色背景
+            }
+        };
+
         const backgroundColors = {
             light: '#fefcfb',  // 温暖米白色
             dark: '#1f2937'    // 深灰色
@@ -59,7 +76,48 @@
         }
 
         function getBackgroundColor() {
-            return backgroundColors[currentTheme];
+            // 根据计时器状态返回对应的背景色
+            return timerStateColors[currentTimerState]?.[currentTheme] || backgroundColors[currentTheme];
+        }
+
+        function updateTimerState(timerState) {
+            if (timerState === currentTimerState) return;
+            currentTimerState = timerState;
+            document.body.style.backgroundColor = getBackgroundColor();
+
+            // 更新所有粒子的颜色以匹配新的状态
+            const newPalette = colorPalettes[currentTheme];
+            if (timerState === 'focus') {
+                // 专注模式：使用暖色调
+                particles.forEach(p => {
+                    const warmColors = [
+                        { r: 255, g: 107, b: 107 },  // 红色
+                        { r: 255, g: 142, b: 83 },  // 橙色
+                        { r: 255, g: 193, b: 7 },   // 黄色
+                    ];
+                    p.color = warmColors[Math.floor(Math.random() * warmColors.length)];
+                });
+            } else if (timerState === 'shortBreak') {
+                // 短休息：使用冷色调
+                particles.forEach(p => {
+                    const coolColors = [
+                        { r: 78, g: 205, b: 196 },  // 青色
+                        { r: 87, g: 101, b: 116 },  // 蓝色
+                        { r: 142, g: 68, b: 173 },  // 紫色
+                    ];
+                    p.color = coolColors[Math.floor(Math.random() * coolColors.length)];
+                });
+            } else if (timerState === 'longBreak') {
+                // 长休息：使用自然色调
+                particles.forEach(p => {
+                    const natureColors = [
+                        { r: 149, g: 225, b: 211 }, // 薄荷绿
+                        { r: 52, g: 152, b: 219 },  // 蓝色
+                        { r: 46, g: 204, b: 113 },  // 绿色
+                    ];
+                    p.color = natureColors[Math.floor(Math.random() * natureColors.length)];
+                });
+            }
         }
 
         function updateTheme(theme) {
@@ -83,7 +141,30 @@
 
             particles = [];
             const count = Math.floor((width * height) / 40000);
-            const palette = getColorPalette();
+            
+            // 根据当前计时器状态选择粒子颜色
+            let palette;
+            if (currentTimerState === 'focus') {
+                palette = [
+                    { r: 255, g: 107, b: 107 },
+                    { r: 255, g: 142, b: 83 },
+                    { r: 255, g: 193, b: 7 },
+                ];
+            } else if (currentTimerState === 'shortBreak') {
+                palette = [
+                    { r: 78, g: 205, b: 196 },
+                    { r: 87, g: 101, b: 116 },
+                    { r: 142, g: 68, b: 173 },
+                ];
+            } else if (currentTimerState === 'longBreak') {
+                palette = [
+                    { r: 149, g: 225, b: 211 },
+                    { r: 52, g: 152, b: 219 },
+                    { r: 46, g: 204, b: 113 },
+                ];
+            } else {
+                palette = getColorPalette();
+            }
 
             for (let i = 0; i < count; i++) {
                 particles.push(new LightFlake(palette));
@@ -154,7 +235,12 @@
         // 监听父页面的主题变化
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'theme-change') {
-                updateTheme(event.data.theme);
+                if (event.data.theme) {
+                    updateTheme(event.data.theme);
+                }
+                if (event.data.timerState) {
+                    updateTimerState(event.data.timerState);
+                }
             }
         });
 

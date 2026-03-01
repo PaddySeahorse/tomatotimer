@@ -95,3 +95,5 @@ Desktop.ini
 # Misc
 .vercel
 .turbo
+.claude/
+.agents/

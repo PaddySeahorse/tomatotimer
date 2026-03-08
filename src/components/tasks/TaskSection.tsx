@@ -1,4 +1,5 @@
-import { TaskIcon } from '@/components/icons';
+import { ListTodo } from 'lucide-react';
+
 import { TaskItem } from '@/components/tasks/TaskItem';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -43,7 +44,7 @@ export function TaskSection({
     <div className={`rounded-3xl border border-white/30 bg-white/70 p-8 shadow-2xl backdrop-blur-lg ${theme === 'dark' ? 'border-gray-700 bg-gray-800/70' : ''}`}>
       <div className="mb-6 flex items-center justify-between">
         <h2 className={`flex items-center gap-2 text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-          <TaskIcon />
+          <ListTodo />
           任务列表
         </h2>
         <button

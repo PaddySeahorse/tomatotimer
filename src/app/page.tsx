@@ -2,8 +2,9 @@
 
 import { useCallback, useState } from 'react';
 
+import { Moon, Sun } from 'lucide-react';
+
 import Background from '@/components/Background';
-import { DarkModeIcon, LightModeIcon } from '@/components/icons';
 import { TaskSection } from '@/components/tasks/TaskSection';
 import { CustomTimePicker } from '@/components/timer/CustomTimePicker';
 import { FullscreenTimer } from '@/components/timer/FullscreenTimer';
@@ -73,7 +74,7 @@ export default function Pomodoro() {
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`rounded-full p-3 transition-colors ${theme === 'dark' ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-white/50 text-gray-700 hover:bg-white/80'}`}
               >
-                {theme === 'light' ? <LightModeIcon /> : <DarkModeIcon />}
+                {theme === 'light' ? <Sun /> : <Moon />}
               </button>
             </div>
           </header>

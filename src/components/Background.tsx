@@ -26,13 +26,22 @@ export default function Background({ theme }: BackgroundProps) {
     sendMessage();
 
     // 窗口大小变化时重新发送
+    let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
-      sendMessage();
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        sendMessage();
+      }, 150);
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [theme]);
 

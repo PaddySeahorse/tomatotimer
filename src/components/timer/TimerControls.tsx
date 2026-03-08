@@ -1,4 +1,5 @@
-import { PauseIcon, PlayIcon, RefreshIcon, StopIcon } from '@/components/icons';
+import { Pause, Play, RotateCw, Square } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import type { ThemeMode } from '@/lib/types';
 
@@ -33,14 +34,14 @@ export function TimerControls({
         )}
         style={{ backgroundColor: color }}
       >
-        {isRunning ? <><PauseIcon /> 暂停</> : <><PlayIcon /> 开始</>}
+        {isRunning ? <><Pause /> 暂停</> : <><Play /> 开始</>}
       </button>
       {fullscreen && onStop ? (
         <button
           onClick={onStop}
           className="flex items-center gap-3 rounded-full bg-gray-200 px-10 py-6 text-2xl font-semibold text-gray-700 transition-all duration-300 hover:bg-gray-300 active:scale-95"
         >
-          <StopIcon />
+          <Square />
           终止
         </button>
       ) : onReset ? (
@@ -51,7 +52,7 @@ export function TimerControls({
             theme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           )}
         >
-          <RefreshIcon />
+          <RotateCw />
           重置
         </button>
       ) : null}

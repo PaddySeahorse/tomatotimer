@@ -1,4 +1,5 @@
-import { AlarmIcon, ChevronDownIcon, PlayIcon } from '@/components/icons';
+import { AlarmClock, ChevronDown, Play } from 'lucide-react';
+
 import type { Task, ThemeMode } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -56,11 +57,9 @@ export function TaskItem({
         >
           {task.text}
         </span>
-        <ChevronDownIcon
-          width={16}
-          height={16}
-          className={cn('transition-transform duration-200', isExpanded && 'rotate-180')}
-          stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+        <ChevronDown
+          size={16}
+          className={cn('transition-transform duration-200', isExpanded && 'rotate-180', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}
         />
       </div>
 
@@ -69,7 +68,7 @@ export function TaskItem({
           <div className="flex items-center gap-3">
             {task.plannedTime && (
               <span className={`flex items-center gap-1 text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                <AlarmIcon />
+                <AlarmClock size={16} />
                 {task.plannedTime}分钟
               </span>
             )}
@@ -88,7 +87,7 @@ export function TaskItem({
                 }}
                 className="flex items-center gap-1 rounded-lg bg-rose-500 px-3 py-1 text-sm text-white transition-colors hover:bg-rose-600"
               >
-                <PlayIcon />
+                <Play size={16} />
                 开始
               </button>
             )}

@@ -2,10 +2,10 @@ import { expect, test, mock } from "bun:test";
 
 // Mocking dependencies because node_modules are not available
 mock.module("clsx", () => ({
-  clsx: (...inputs: any[]) => {
+  clsx: (...inputs: unknown[]) => {
     const result: string[] = [];
 
-    function process(input: any) {
+    function process(input: unknown) {
       if (!input) return;
       if (typeof input === "string" || typeof input === "number") {
         result.push(String(input));
@@ -46,10 +46,10 @@ mock.module("tailwind-merge", () => ({
 // Re-implementing cn to avoid the "Cannot find package 'clsx'" error that
 // occurs during import when node_modules is missing.
 // This matches the production logic exactly.
-const clsx = require("clsx").clsx;
-const twMerge = require("tailwind-merge").twMerge;
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-function cn(...inputs: any[]) {
+function cn(...inputs: unknown[]) {
   return twMerge(clsx(inputs));
 }
 

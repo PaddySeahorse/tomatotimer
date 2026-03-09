@@ -32,39 +32,86 @@
 
         let width, height, particles;
         let currentTheme = 'light';
+        let currentTimerState = 'focus';
 
         // 色系配置
         const colorPalettes = {
-            light: [
-                { r: 255, g: 127, b: 80 },  // 珊瑚红
-                { r: 255, g: 160, b: 122 }, // 浅鲑鱼色
-                { r: 255, g: 218, b: 185 }, // 桃色
-                { r: 255, g: 240, b: 245 }  // 极浅粉
-            ],
-            dark: [
-                { r: 255, g: 250, b: 205 }, // 淡黄色 (LemonChiffon)
-                { r: 255, g: 255, b: 224 }, // 浅黄色 (LightYellow)
-                { r: 255, g: 248, b: 220 }, // 玉米丝色 (Cornsilk)
-                { r: 50, g: 50, b: 55 }     // 暗灰色
-            ]
+            light: {
+                focus: [
+                    { r: 255, g: 107, b: 107 }, // FF6B6B
+                    { r: 255, g: 140, b: 140 }, // 浅红色
+                    { r: 255, g: 180, b: 180 }, // 更浅的红色
+                    { r: 255, g: 240, b: 245 }  // 极浅粉
+                ],
+                shortBreak: [
+                    { r: 78, g: 205, b: 196 }, // 4ECDC4
+                    { r: 120, g: 220, b: 210 }, // 浅青色
+                    { r: 160, g: 240, b: 230 }, // 更浅的青色
+                    { r: 240, g: 255, b: 250 }  // 极浅青
+                ],
+                longBreak: [
+                    { r: 108, g: 92, b: 231 }, // 6C5CE7
+                    { r: 140, g: 120, b: 240 }, // 浅紫色
+                    { r: 180, g: 160, b: 250 }, // 更浅的紫色
+                    { r: 245, g: 240, b: 255 }  // 极浅紫
+                ]
+            },
+            dark: {
+                focus: [
+                    { r: 255, g: 107, b: 107 }, // FF6B6B
+                    { r: 200, g: 80, b: 80 },   // 深红色
+                    { r: 150, g: 60, b: 60 },   // 更深的红色
+                    { r: 50, g: 50, b: 55 }     // 暗灰色
+                ],
+                shortBreak: [
+                    { r: 78, g: 205, b: 196 }, // 4ECDC4
+                    { r: 60, g: 160, b: 150 },   // 深青色
+                    { r: 40, g: 120, b: 110 },   // 更深的青色
+                    { r: 50, g: 50, b: 55 }      // 暗灰色
+                ],
+                longBreak: [
+                    { r: 108, g: 92, b: 231 }, // 6C5CE7
+                    { r: 80, g: 70, b: 180 },    // 深紫色
+                    { r: 60, g: 50, b: 140 },    // 更深的紫色
+                    { r: 50, g: 50, b: 55 }      // 暗灰色
+                ]
+            }
         };
 
         const backgroundColors = {
-            light: '#fefcfb',  // 温暖米白色
-            dark: '#1f2937'    // 深灰色
+            light: {
+                focus: '#fefcfb',      // 温暖米白色
+                shortBreak: '#f0fdfa', // 浅青色背景
+                longBreak: '#f5f3ff'   // 浅紫色背景
+            },
+            dark: {
+                focus: '#1f2937',      // 深灰色
+                shortBreak: '#111827', // 更深的背景
+                longBreak: '#1e1b4b'   // 深紫背景
+            }
         };
 
         function getColorPalette() {
-            return colorPalettes[currentTheme];
+            return colorPalettes[currentTheme][currentTimerState];
         }
 
         function getBackgroundColor() {
-            return backgroundColors[currentTheme];
+            return backgroundColors[currentTheme][currentTimerState];
         }
 
-        function updateTheme(theme) {
-            if (theme === currentTheme) return;
-            currentTheme = theme;
+        function updateStyle(theme, timerState) {
+            let changed = false;
+            if (theme && theme !== currentTheme) {
+                currentTheme = theme;
+                changed = true;
+            }
+            if (timerState && timerState !== currentTimerState) {
+                currentTimerState = timerState;
+                changed = true;
+            }
+
+            if (!changed) return;
+
             document.body.style.backgroundColor = getBackgroundColor();
 
             // 更新所有粒子的颜色
@@ -154,7 +201,7 @@
         // 监听父页面的主题变化
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'theme-change') {
-                updateTheme(event.data.theme);
+                updateStyle(event.data.theme, event.data.timerState);
             }
         });
 

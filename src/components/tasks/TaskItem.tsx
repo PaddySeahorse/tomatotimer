@@ -46,6 +46,8 @@ export function TaskItem({
                 ? 'border-gray-500 hover:border-rose-400'
                 : 'border-gray-300 hover:border-rose-400'
           )}
+          aria-label={task.completed ? "标记为未完成" : "标记为已完成"}
+          title={task.completed ? "标记为未完成" : "标记为已完成"}
         >
           {task.completed && '✓'}
         </button>

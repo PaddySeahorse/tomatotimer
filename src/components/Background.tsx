@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 
-type ThemeMode = 'light' | 'dark';
+import type { ThemeMode, TimerState } from '@/lib/types';
 
 interface BackgroundProps {
   theme: ThemeMode;
+  timerState: TimerState;
 }
 
-export default function Background({ theme }: BackgroundProps) {
+export default function Background({ theme, timerState }: BackgroundProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function Background({ theme }: BackgroundProps) {
     const sendMessage = () => {
       if (iframeRef.current?.contentWindow) {
         iframeRef.current.contentWindow.postMessage(
-          { type: 'theme-change', theme },
+          { type: 'theme-change', theme, timerState },
           '*'
         );
       }
@@ -43,7 +44,7 @@ export default function Background({ theme }: BackgroundProps) {
         clearTimeout(timeoutId);
       }
     };
-  }, [theme]);
+  }, [theme, timerState]);
 
   return (
     <iframe

@@ -49,6 +49,7 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
 
   useEffect(() => {
     if (isRunning && state === 'focus' && !isFullscreen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFullscreen(true);
     }
 

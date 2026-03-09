@@ -1,0 +1,3 @@
+## 2024-05-18 - Interactive UI Components Missing ARIA Attributes
+**Learning:** Found several missing `aria-label`s on icon-only and interactive components like the theme toggle, task completion checkbox, and custom time range slider, leading to uncommunicative screen-reader experiences. This highlights a need to always double-check interactive elements without text labels. Additionally, discovered that the dynamic background logic via `iframe` with `postMessage` didn't synchronize with the internal timer state.
+**Action:** Always include `aria-label` and `title` for icon buttons, range sliders, and custom checkbox elements. Extend internal theming logic (like timer states) to any isolated components (`iframes`, web workers) passing the correct contexts.

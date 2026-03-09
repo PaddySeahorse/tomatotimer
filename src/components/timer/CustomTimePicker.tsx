@@ -29,6 +29,8 @@ export function CustomTimePicker({ customTime, theme, onChange, onApply, onCance
         value={customTime}
         onChange={(event) => onChange(Number.parseInt(event.target.value, 10))}
         className="h-2 w-full cursor-pointer appearance-none rounded-lg accent-rose-500"
+        aria-label="自定义专注时长"
+        title="自定义专注时长"
         style={{
           background:
             theme === 'dark'

@@ -44,7 +44,7 @@ export default function Pomodoro() {
 
   return (
     <>
-      <Background theme={theme} />
+      <Background theme={theme} timerState={timer.state} />
 
       {timer.isFullscreen && (
         <FullscreenTimer
@@ -73,6 +73,8 @@ export default function Pomodoro() {
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`rounded-full p-3 transition-colors ${theme === 'dark' ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-white/50 text-gray-700 hover:bg-white/80'}`}
+                aria-label="切换深浅色主题"
+                title="切换深浅色主题"
               >
                 {theme === 'light' ? <Sun /> : <Moon />}
               </button>

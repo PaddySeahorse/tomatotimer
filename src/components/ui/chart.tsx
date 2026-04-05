@@ -70,33 +70,45 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme || config.color
-  )
+  const configEntries = Object.entries(config)
 
-  if (!colorConfig.length) {
+  let hasStyles = false
+  for (const [, itemConfig] of configEntries) {
+    if (itemConfig.theme || itemConfig.color) {
+      hasStyles = true
+      break
+    }
+  }
+
+  if (!hasStyles) {
     return null
+  }
+
+  const themeEntries = Object.entries(THEMES)
+
+  let finalStyles = ""
+  for (let i = 0; i < themeEntries.length; i++) {
+    const [theme, prefix] = themeEntries[i]
+    let styles = ""
+    for (let j = 0; j < configEntries.length; j++) {
+      const [key, itemConfig] = configEntries[j]
+      const color =
+        itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+        itemConfig.color
+      if (color) {
+        styles += `  --color-${key}: ${color};\n`
+      }
+    }
+
+    if (styles) {
+      finalStyles += (i > 0 ? "\n" : "") + `\n${prefix} [data-chart=${id}] {\n${styles}}\n`
+    }
   }
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
+        __html: finalStyles,
       }}
     />
   )

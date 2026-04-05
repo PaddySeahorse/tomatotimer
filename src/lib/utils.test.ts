@@ -12,7 +12,7 @@ mock.module("clsx", () => ({
       } else if (Array.isArray(input)) {
         input.forEach(process);
       } else if (typeof input === "object") {
-        Object.entries(input).forEach(([key, value]) => {
+        Object.entries(input as Record<string, unknown>).forEach(([key, value]) => {
           if (value) result.push(key);
         });
       }
@@ -43,17 +43,10 @@ mock.module("tailwind-merge", () => ({
   },
 }));
 
-// Re-implementing cn to avoid the "Cannot find package 'clsx'" error that
-// occurs during import when node_modules is missing.
-// This matches the production logic exactly.
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+test("cn utility function tests", async () => {
+  // Use dynamic import to ensure mocks are active and handle missing node_modules
+  const { cn } = await import("./utils");
 
-function cn(...inputs: unknown[]) {
-  return twMerge(clsx(inputs));
-}
-
-test("cn utility function tests", () => {
   expect(cn("base", "extra")).toContain("base");
   expect(cn("base", "extra")).toContain("extra");
 

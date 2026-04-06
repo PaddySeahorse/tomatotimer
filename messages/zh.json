@@ -1,0 +1,52 @@
+{
+  "Metadata": {
+    "title": "Tomato Timer - 番茄计时器",
+    "description": "一个功能丰富的 Pomodoro 番茄计时器应用，帮助您专注工作，提高效率。",
+    "keywords": {
+      "timer": "番茄计时器",
+      "focus": "专注计时",
+      "timeManagement": "时间管理",
+      "productivity": "效率工具"
+    }
+  },
+  "Timer": {
+    "focus": "专注",
+    "shortBreak": "短休息",
+    "longBreak": "长休息",
+    "customTime": "自定义时长",
+    "customFocusTime": "自定义专注时长",
+    "start": "开始",
+    "pause": "暂停",
+    "stop": "停止",
+    "resume": "继续",
+    "apply": "应用",
+    "cancel": "取消",
+    "timeLabel": "专注时间",
+    "durationValidation": "时长必须在15-120分钟之间",
+    "durationSet": "专注时长已设置为{customTime}分钟",
+    "completed": "{label}结束！",
+    "reset": "重置"
+  },
+  "Page": {
+    "title": "番茄钟",
+    "subtitle": "专注当下，成就未来",
+    "themeToggle": "切换深浅色主题",
+    "languageToggle": "切换语言"
+  },
+  "Tasks": {
+    "title": "任务列表",
+    "add": "+ 添加",
+    "cancel": "✕ 取消",
+    "inputPlaceholder": "输入任务名称...",
+    "plannedTimeLabel": "规划时长（分钟）",
+    "minutes": "分钟",
+    "noteLabel": "备注（可选）",
+    "notePlaceholder": "添加任务备注...",
+    "submit": "添加任务",
+    "empty": "暂无任务，点击上方\"添加\"创建",
+    "startTask": "开始任务",
+    "note": "备注",
+    "noNote": "无备注",
+    "delete": "删除"
+  }
+}

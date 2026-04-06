@@ -1,4 +1,5 @@
 import { Pause, Play, RotateCw, Square } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils';
 import type { ThemeMode } from '@/lib/types';
@@ -22,6 +23,7 @@ export function TimerControls({
   onStop,
   fullscreen = false,
 }: TimerControlsProps) {
+  const t = useTranslations('Timer');
   return (
     <div className={cn('flex justify-center gap-4', fullscreen && 'gap-6')}>
       <button
@@ -34,7 +36,7 @@ export function TimerControls({
         )}
         style={{ backgroundColor: color }}
       >
-        {isRunning ? <><Pause /> 暂停</> : <><Play /> 开始</>}
+        {isRunning ? <><Pause /> {t('pause')}</> : <><Play /> {t('start')}</>}
       </button>
       {fullscreen && onStop ? (
         <button
@@ -42,7 +44,7 @@ export function TimerControls({
           className="flex items-center gap-3 rounded-full bg-gray-200 px-10 py-6 text-2xl font-semibold text-gray-700 transition-all duration-300 hover:bg-gray-300 active:scale-95"
         >
           <Square />
-          终止
+          {t('stop')}
         </button>
       ) : onReset ? (
         <button
@@ -53,7 +55,7 @@ export function TimerControls({
           )}
         >
           <RotateCw />
-          重置
+          {t('reset', { fallback: 'Reset' })}
         </button>
       ) : null}
     </div>

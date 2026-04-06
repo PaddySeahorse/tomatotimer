@@ -5,11 +5,13 @@ import type { TimerConfig, TimerState } from '@/lib/types';
 const FOCUS_MINUTES_MIN = 15;
 const FOCUS_MINUTES_MAX = 120;
 
-function getTimerConfig(customTime: number): Record<TimerState, TimerConfig> {
+import { useTranslations } from 'next-intl';
+
+function getTimerConfig(customTime: number, t: (key: string, values?: Record<string, string | number>) => string): Record<TimerState, TimerConfig> {
   return {
-    focus: { time: customTime * 60, color: '#FF6B6B', label: '专注时间' },
-    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: '短休息' },
-    longBreak: { time: 15 * 60, color: '#6C5CE7', label: '长休息' },
+    focus: { time: customTime * 60, color: '#FF6B6B', label: t('timeLabel') },
+    shortBreak: { time: 5 * 60, color: '#4ECDC4', label: t('shortBreak') },
+    longBreak: { time: 15 * 60, color: '#6C5CE7', label: t('longBreak') },
   };
 }
 
@@ -25,8 +27,9 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
   const [isRunning, setIsRunning] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showCustomTimeInput, setShowCustomTimeInput] = useState(false);
+  const t = useTranslations('Timer');
 
-  const timerConfig = useMemo(() => getTimerConfig(customTime), [customTime]);
+  const timerConfig = useMemo(() => getTimerConfig(customTime, t), [customTime, t]);
 
   useEffect(() => {
     if (!isRunning || timeLeft <= 0) {
@@ -72,12 +75,12 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
   }, [isFullscreen]);
 
   const syncTimer = useCallback((nextState: TimerState, minutes?: number) => {
-    const config = getTimerConfig(minutes ?? customTime);
+    const config = getTimerConfig(minutes ?? customTime, t);
     setState(nextState);
     setIsRunning(false);
     setTotalTime(config[nextState].time);
     setTimeLeft(config[nextState].time);
-  }, [customTime]);
+  }, [customTime, t]);
 
   const switchState = useCallback((nextState: TimerState) => {
     syncTimer(nextState);
@@ -100,7 +103,7 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
 
   const applyCustomTime = useCallback(() => {
     if (customTime < FOCUS_MINUTES_MIN || customTime > FOCUS_MINUTES_MAX) {
-      return { success: false as const, message: '时长必须在15-120分钟之间' };
+      return { success: false as const, message: t('durationValidation') };
     }
 
     setTotalTime(customTime * 60);
@@ -109,9 +112,9 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
 
     return {
       success: true as const,
-      message: `专注时长已设置为${customTime}分钟`,
+      message: t('durationSet', { customTime }),
     };
-  }, [customTime]);
+  }, [customTime, t]);
 
   const startTaskTimer = useCallback((minutes?: number) => {
     const nextMinutes = minutes ?? customTime;

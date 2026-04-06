@@ -1,4 +1,5 @@
 import { AlarmClock, ChevronDown, Play } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import type { Task, ThemeMode } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -22,6 +23,8 @@ export function TaskItem({
   onDelete,
   onStartTask,
 }: TaskItemProps) {
+  const t = useTranslations('Tasks');
+
   return (
     <div
       className={cn(
@@ -71,7 +74,7 @@ export function TaskItem({
             {task.plannedTime && (
               <span className={`flex items-center gap-1 text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                 <AlarmClock size={16} />
-                {task.plannedTime}分钟
+                {task.plannedTime}{t('minutes')}
               </span>
             )}
             {task.note && (
@@ -90,7 +93,7 @@ export function TaskItem({
                 className="flex items-center gap-1 rounded-lg bg-rose-500 px-3 py-1 text-sm text-white transition-colors hover:bg-rose-600"
               >
                 <Play size={16} />
-                开始
+                {t('startTask')}
               </button>
             )}
             <button
@@ -100,7 +103,7 @@ export function TaskItem({
               }}
               className="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-600 transition-colors hover:bg-red-200"
             >
-              删除
+              {t('delete')}
             </button>
           </div>
         </div>

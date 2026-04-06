@@ -1,4 +1,5 @@
 import { ListTodo } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { TaskItem } from '@/components/tasks/TaskItem';
 import { Input } from '@/components/ui/input';
@@ -39,19 +40,20 @@ export function TaskSection({
   onStartTask,
 }: TaskSectionProps) {
   const sliderProgress = ((taskDraft.plannedTime - 15) / 105) * 100;
+  const t = useTranslations('Tasks');
 
   return (
     <div className={`rounded-3xl border border-white/30 bg-white/70 p-8 shadow-2xl backdrop-blur-lg ${theme === 'dark' ? 'border-gray-700 bg-gray-800/70' : ''}`}>
       <div className="mb-6 flex items-center justify-between">
         <h2 className={`flex items-center gap-2 text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
           <ListTodo />
-          任务列表
+          {t('title')}
         </h2>
         <button
           onClick={onToggleTaskInput}
           className="rounded-full bg-rose-500 px-4 py-2 font-medium text-white transition-colors hover:bg-rose-600"
         >
-          {showTaskInput ? '✕ 取消' : '+ 添加'}
+          {showTaskInput ? t('cancel') : t('add')}
         </button>
       </div>
 
@@ -62,12 +64,12 @@ export function TaskSection({
             value={taskDraft.text}
             onChange={(event) => onUpdateTaskDraft({ text: event.target.value })}
             onKeyDown={(event) => event.key === 'Enter' && onAddTask()}
-            placeholder="输入任务名称..."
+            placeholder={t('inputPlaceholder')}
             className={theme === 'dark' ? 'border-gray-600 bg-gray-800 text-white focus-visible:border-rose-400' : 'border-gray-200 bg-white text-gray-800 focus-visible:border-rose-300'}
           />
           <div className="mt-3">
             <label className={`mb-2 block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-              规划时长（分钟）
+              {t('plannedTimeLabel')}
             </label>
             <input
               type="range"
@@ -85,21 +87,21 @@ export function TaskSection({
               }}
             />
             <div className="mt-1 flex justify-between">
-              <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>15分钟</span>
+              <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>15{t('minutes')}</span>
               <span className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-                {taskDraft.plannedTime} 分钟
+                {taskDraft.plannedTime} {t('minutes')}
               </span>
-              <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>120分钟</span>
+              <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>120{t('minutes')}</span>
             </div>
           </div>
           <div className="mt-3">
             <label className={`mb-2 block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-              备注（可选）
+              {t('noteLabel')}
             </label>
             <Textarea
               value={taskDraft.note}
               onChange={(event) => onUpdateTaskDraft({ note: event.target.value })}
-              placeholder="添加任务备注..."
+              placeholder={t('notePlaceholder')}
               rows={2}
               className={theme === 'dark' ? 'border-gray-600 bg-gray-800 text-white focus-visible:border-rose-400 resize-none' : 'border-gray-200 bg-white text-gray-800 focus-visible:border-rose-300 resize-none'}
             />
@@ -108,14 +110,14 @@ export function TaskSection({
             onClick={onAddTask}
             className="mt-3 w-full rounded-xl bg-rose-500 py-2 font-medium text-white transition-colors hover:bg-rose-600"
           >
-            添加任务
+            {t('submit')}
           </button>
         </div>
       )}
 
       <div className="max-h-96 space-y-3 overflow-y-auto">
         {tasks.length === 0 ? (
-          <div className="py-8 text-center text-gray-400">暂无任务，点击上方&quot;添加&quot;创建</div>
+          <div className="py-8 text-center text-gray-400">{t('empty')}</div>
         ) : (
           tasks.map((task) => (
             <TaskItem

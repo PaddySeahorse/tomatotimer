@@ -1,0 +1,52 @@
+{
+  "Metadata": {
+    "title": "Tomato Timer",
+    "description": "A feature-rich Pomodoro timer app to help you focus and boost productivity.",
+    "keywords": {
+      "timer": "Tomato Timer",
+      "focus": "Focus Timer",
+      "timeManagement": "Time Management",
+      "productivity": "Productivity Tool"
+    }
+  },
+  "Timer": {
+    "focus": "Focus",
+    "shortBreak": "Short Break",
+    "longBreak": "Long Break",
+    "customTime": "Custom Time",
+    "customFocusTime": "Custom Focus Time",
+    "start": "Start",
+    "pause": "Pause",
+    "stop": "Stop",
+    "resume": "Resume",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "timeLabel": "Focus Time",
+    "durationValidation": "Duration must be between 15 and 120 minutes",
+    "durationSet": "Focus duration has been set to {customTime} minutes",
+    "completed": "{label} completed!",
+    "reset": "Reset"
+  },
+  "Page": {
+    "title": "Pomodoro",
+    "subtitle": "Focus on the present, achieve the future",
+    "themeToggle": "Toggle theme",
+    "languageToggle": "Toggle language"
+  },
+  "Tasks": {
+    "title": "Task List",
+    "add": "+ Add",
+    "cancel": "✕ Cancel",
+    "inputPlaceholder": "Enter task name...",
+    "plannedTimeLabel": "Planned Time (minutes)",
+    "minutes": "mins",
+    "noteLabel": "Note (optional)",
+    "notePlaceholder": "Add task note...",
+    "submit": "Add Task",
+    "empty": "No tasks yet, click \"Add\" above to create one",
+    "startTask": "Start Task",
+    "note": "Note",
+    "noNote": "No note",
+    "delete": "Delete"
+  }
+}

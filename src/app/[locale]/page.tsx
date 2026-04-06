@@ -72,15 +72,15 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
 
       {!timer.isFullscreen && (
         <div className="relative z-10 container mx-auto px-4 py-8">
-          <header className="mb-8 flex items-center justify-between">
-            <div className="flex-1 text-center">
-              <h1 className={`mb-2 text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+          <header className="mb-8 flex items-center justify-between gap-4">
+            <div className="flex-1 text-center sm:text-left">
+              <h1 className={`mb-2 text-3xl sm:text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                 {tPage('title')}
               </h1>
               <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>{tPage('subtitle')}</p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => {
                   startTransition(() => {
@@ -107,13 +107,13 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
           </header>
 
           <div className="mx-auto grid max-w-4xl gap-8 lg:grid-cols-2">
-            <div className="rounded-3xl border border-white/30 bg-white/70 p-8 shadow-2xl backdrop-blur-lg">
-              <div className="mb-8 flex justify-center gap-3">
+            <div className="rounded-3xl border border-white/30 bg-white/70 p-4 sm:p-8 shadow-2xl backdrop-blur-lg">
+              <div className="mb-8 flex flex-wrap justify-center gap-2 sm:gap-3">
                 {TIMER_STATES.map(({ key }) => (
                   <button
                     key={key}
                     onClick={() => timer.switchState(key)}
-                    className={`rounded-full px-6 py-3 font-semibold transition-all duration-300 ${
+                    className={`rounded-full px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold transition-all duration-300 ${
                       timer.state === key ? 'scale-105 shadow-lg' : 'bg-white/50 hover:bg-white/80'
                     }`}
                     style={{

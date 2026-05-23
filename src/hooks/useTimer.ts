@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { TimerConfig, TimerState } from '@/lib/types';
+import { useLocalStorage } from './useLocalStorage';
 
 const FOCUS_MINUTES_MIN = 15;
 const FOCUS_MINUTES_MAX = 120;
@@ -21,7 +22,7 @@ interface UseTimerOptions {
 
 export function useTimer({ onComplete }: UseTimerOptions = {}) {
   const [state, setState] = useState<TimerState>('focus');
-  const [customTime, setCustomTime] = useState(25);
+  const [customTime, setCustomTime] = useLocalStorage('pomodoro-custom-time', 25);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [totalTime, setTotalTime] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);

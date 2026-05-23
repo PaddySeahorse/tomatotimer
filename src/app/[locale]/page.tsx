@@ -13,6 +13,7 @@ import { FullscreenTimer } from '@/components/timer/FullscreenTimer';
 import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { ToastSystem } from '@/components/ui/ToastSystem';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useTasks } from '@/hooks/useTasks';
 import { useTimer } from '@/hooks/useTimer';
 import { useToasts } from '@/hooks/useToasts';
@@ -28,7 +29,7 @@ import { use } from 'react';
 
 export default function Pomodoro({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
-  const [theme, setTheme] = useState<ThemeMode>('light');
+  const [theme, setTheme] = useLocalStorage<ThemeMode>('pomodoro-theme', 'light');
   const { toasts, addToast } = useToasts();
   const tPage = useTranslations('Page');
   const tTimer = useTranslations('Timer');

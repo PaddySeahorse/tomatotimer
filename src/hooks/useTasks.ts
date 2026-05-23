@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import type { Task } from '@/lib/types';
+import { useLocalStorage } from './useLocalStorage';
 
 interface TaskDraft {
   text: string;
@@ -15,7 +16,7 @@ const initialDraft: TaskDraft = {
 };
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useLocalStorage<Task[]>('pomodoro-tasks', []);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [showTaskInput, setShowTaskInput] = useState(false);
   const [taskDraft, setTaskDraft] = useState<TaskDraft>(initialDraft);

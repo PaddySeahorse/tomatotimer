@@ -86,29 +86,31 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
   const themeEntries = Object.entries(THEMES)
 
-  let finalStyles = ""
+  const finalStyles: string[] = []
   for (let i = 0; i < themeEntries.length; i++) {
     const [theme, prefix] = themeEntries[i]
-    let styles = ""
+    const styles: string[] = []
     for (let j = 0; j < configEntries.length; j++) {
       const [key, itemConfig] = configEntries[j]
       const color =
         itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
         itemConfig.color
       if (color) {
-        styles += `  --color-${key}: ${color};\n`
+        styles.push(`  --color-${key}: ${color};\n`)
       }
     }
 
-    if (styles) {
-      finalStyles += (i > 0 ? "\n" : "") + `\n${prefix} [data-chart=${id}] {\n${styles}}\n`
+    if (styles.length > 0) {
+      finalStyles.push(
+        `${i > 0 ? "\n" : ""}\n${prefix} [data-chart=${id}] {\n${styles.join("")}}\n`
+      )
     }
   }
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: finalStyles,
+        __html: finalStyles.join(""),
       }}
     />
   )

@@ -602,13 +602,12 @@ function SidebarMenuBadge({
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
+  width = '70%',
   ...props
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean;
+  width?: string | number;
 }) {
-  // Fixed width for skeleton loading
-  const width = '70%';
-
   return (
     <div
       data-slot="sidebar-menu-skeleton"

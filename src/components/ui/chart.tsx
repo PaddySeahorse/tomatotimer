@@ -70,6 +70,7 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const chartId = id.replace(/[^\w-]/g, "")
   const configEntries = Object.entries(config)
 
   let hasStyles = false

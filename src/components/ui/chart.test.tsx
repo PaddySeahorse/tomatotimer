@@ -1,52 +1,11 @@
-import { expect, test, mock } from "bun:test";
+import { expect, test, mock, beforeAll } from "bun:test";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { render } from "@testing-library/react";
+import React from "react";
 
-// Mock React and JSX runtimes
-mock.module("react", () => {
-  const React = {
-    createElement: (type: any, props: any, ...children: any[]) => {
-      return { type, props, children };
-    },
-    useContext: () => ({}),
-    useId: () => "test-id",
-    useMemo: (factory: any) => factory(),
-    createContext: () => ({
-      Provider: ({ children }: any) => children,
-    }),
-    Fragment: "Fragment",
-  };
-  return {
-    ...React,
-    default: React,
-  };
+beforeAll(() => {
+  GlobalRegistrator.register();
 });
-
-mock.module("react/jsx-runtime", () => ({
-  jsx: (type: any, props: any) => {
-    const { children, ...rest } = props;
-    return { type, props: rest, children };
-  },
-  jsxs: (type: any, props: any) => {
-    const { children, ...rest } = props;
-    return { type, props: rest, children };
-  },
-  Fragment: "Fragment",
-}));
-
-mock.module("react/jsx-dev-runtime", () => ({
-  jsxDEV: (type: any, props: any) => {
-    const { children, ...rest } = props;
-    return { type, props: rest, children };
-  },
-  Fragment: "Fragment",
-}));
-
-// Mock clsx and tailwind-merge
-mock.module("clsx", () => ({
-  clsx: () => "",
-}));
-mock.module("tailwind-merge", () => ({
-  twMerge: () => "",
-}));
 
 // Mock recharts
 mock.module("recharts", () => ({
@@ -69,10 +28,10 @@ test("ChartStyle sanitizes inputs and avoids dangerouslySetInnerHTML", async () 
     config: maliciousConfig,
   });
 
-  expect(output.type).toBe("style");
-  expect(output.props.dangerouslySetInnerHTML).toBeUndefined();
+  expect(output?.type).toBe("style");
+  expect(output?.props.dangerouslySetInnerHTML).toBeUndefined();
 
-  const finalStyles = Array.isArray(output.children) ? output.children[0] : output.children;
+  const finalStyles = output ? (Array.isArray((output as any).children) ? (output as any).children[0] : (output as any).children) : "";
 
   // Verify ID sanitization (regex [^\w-] removes ;)
   expect(finalStyles).toContain("[data-chart=chart-idstylescriptalert1script]");

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 
 import type { TimerConfig, TimerState } from '@/lib/types';
 import { useLocalStorage } from './useLocalStorage';
@@ -32,24 +32,82 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
 
   const timerConfig = useMemo(() => getTimerConfig(customTime, t), [customTime, t]);
 
+  const onCompleteRef = useRef(onComplete);
+  const timerConfigRef = useRef(timerConfig);
+  const stateRef = useRef(state);
+  const timeLeftRef = useRef(timeLeft);
+
   useEffect(() => {
-    if (!isRunning || timeLeft <= 0) {
+    onCompleteRef.current = onComplete;
+    timerConfigRef.current = timerConfig;
+    stateRef.current = state;
+    timeLeftRef.current = timeLeft;
+  }, [onComplete, timerConfig, state, timeLeft]);
+
+  useEffect(() => {
+    if (!isRunning || timeLeftRef.current <= 0) {
       return;
     }
 
-    const interval = window.setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setIsRunning(false);
-          onComplete?.(timerConfig[state].label);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    let worker: Worker | null = null;
+    let interval: number | null = null;
 
-    return () => window.clearInterval(interval);
-  }, [isRunning, onComplete, state, timeLeft, timerConfig]);
+    try {
+      const blob = new Blob(
+        [
+          `
+        let intervalId;
+        self.onmessage = function(e) {
+          if (e.data === 'start') {
+            intervalId = setInterval(() => self.postMessage('tick'), 1000);
+          } else if (e.data === 'stop') {
+            clearInterval(intervalId);
+          }
+        };
+        `,
+        ],
+        { type: 'application/javascript' }
+      );
+      const workerUrl = URL.createObjectURL(blob);
+      worker = new Worker(workerUrl);
+
+      worker.onmessage = (e) => {
+        if (e.data === 'tick') {
+          setTimeLeft((prev) => {
+            if (prev <= 1) {
+              setIsRunning(false);
+              onCompleteRef.current?.(timerConfigRef.current[stateRef.current].label);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }
+      };
+
+      worker.postMessage('start');
+
+      return () => {
+        worker?.postMessage('stop');
+        worker?.terminate();
+        URL.revokeObjectURL(workerUrl);
+      };
+    } catch (e) {
+      interval = window.setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setIsRunning(false);
+            onCompleteRef.current?.(timerConfigRef.current[stateRef.current].label);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        if (interval !== null) window.clearInterval(interval);
+      };
+    }
+  }, [isRunning]);
 
   useEffect(() => {
     if (isRunning && state === 'focus' && !isFullscreen) {

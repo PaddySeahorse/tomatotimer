@@ -70,6 +70,7 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const chartId = id.replace(/[^\w-]/g, "")
   const configEntries = Object.entries(config)
 
   let hasStyles = false
@@ -96,22 +97,20 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
         itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
         itemConfig.color
       if (color) {
-        styles += `  --color-${key}: ${color};\n`
+        const safeKey = key.replace(/[^\w-]/g, "")
+        const safeColor = color.replace(/[;}]/g, "")
+        styles += `  --color-${safeKey}: ${safeColor};\n`
       }
     }
 
     if (styles) {
-      finalStyles += (i > 0 ? "\n" : "") + `\n${prefix} [data-chart=${id}] {\n${styles}}\n`
+      finalStyles +=
+        (i > 0 ? "\n" : "") +
+        `\n${prefix} [data-chart=${chartId}] {\n${styles}}\n`
     }
   }
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: finalStyles,
-      }}
-    />
-  )
+  return <style>{finalStyles}</style>
 }
 
 const ChartTooltip = RechartsPrimitive.Tooltip

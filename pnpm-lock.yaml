@@ -132,13 +132,13 @@ importers:
         specifier: ^8.16.3
         version: 8.19.0
       react:
-        specifier: 19.2.3
+        specifier: ^19.2.3
         version: 19.2.3
       react-day-picker:
         specifier: ^9.13.0
         version: 9.14.0(react@19.2.3)
       react-dom:
-        specifier: 19.2.3
+        specifier: ^19.2.3
         version: 19.2.3(react@19.2.3)
       react-hook-form:
         specifier: ^7.70.0

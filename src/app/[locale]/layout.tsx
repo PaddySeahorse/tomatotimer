@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     description: t('description'),
     keywords: [
-      'Tomato Timer',
+      'Focuspomo',
       'Pomodoro',
       t('keywords.timer'),
       t('keywords.focus'),

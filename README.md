@@ -1,6 +1,6 @@
-# Tomato Timer 🍅
+# Focuspomo 🍅
 
-Tomato Timer 是一款功能丰富、界面优雅的 Pomodoro（番茄钟）计时器应用。采用 Next.js 16 + React 19 + TypeScript + Tailwind CSS v4 构建，并结合了 shadcn/ui 的设计语言，致力于为你提供沉浸式的专注体验。
+Focuspomo 是一款功能丰富、界面优雅的 Pomodoro（番茄钟）计时器应用。采用 Next.js 16 + React 19 + TypeScript + Tailwind CSS v4 构建，并结合了 shadcn/ui 的设计语言，致力于为你提供沉浸式的专注体验。
 
 ## 🌟 项目概述
 

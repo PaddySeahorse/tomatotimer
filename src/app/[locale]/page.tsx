@@ -82,9 +82,9 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
             </div>
           </header>
 
-          <div className="mx-auto grid max-w-4xl gap-8 lg:grid-cols-2">
-            <div className="rounded-3xl border border-white/30 bg-white/70 p-4 sm:p-8 shadow-2xl backdrop-blur-lg">
-              <div className="mb-8 flex flex-wrap justify-center gap-2 sm:gap-3">
+          <div className="mx-auto max-w-2xl">
+            <div className="rounded-3xl border border-white/30 bg-white/70 p-4 sm:p-6 shadow-2xl backdrop-blur-lg">
+              <div className="mb-6 flex flex-wrap justify-center gap-2 sm:gap-3">
                 {TIMER_STATES.map(({ key }) => (
                   <button
                     key={key}
@@ -102,7 +102,7 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
                 ))}
               </div>
 
-              <div className="mb-8 flex justify-center">
+              <div className="mb-6 flex justify-center">
                 <TimerDisplay
                   color={timer.timerConfig[timer.state].color}
                   timeLeft={timer.timeLeft}
@@ -139,7 +139,9 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
                 </button>
               )}
             </div>
+          </div>
 
+          <div className="mt-6">
             <TaskSection
               theme={theme}
               tasks={tasks.tasks}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Calendar, Plus, Trash2, X } from 'lucide-react';
 
@@ -81,6 +81,24 @@ export function TaskSection({
   const [filter, setFilter] = useState<'all' | TaskPriority>('all');
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState<TaskStatus | null>(null);
+  const [activeCol, setActiveCol] = useState(0);
+  const boardRef = useRef<HTMLDivElement>(null);
+
+  const onBoardScroll = useCallback(() => {
+    const el = boardRef.current;
+    if (!el) return;
+    const colWidth = el.querySelector('[data-col]')?.getBoundingClientRect().width ?? 1;
+    const gap = 16;
+    const idx = Math.round(el.scrollLeft / (colWidth + gap));
+    setActiveCol(Math.min(Math.max(idx, 0), STATUSES.length - 1));
+  }, []);
+
+  const scrollToCol = useCallback((idx: number) => {
+    const el = boardRef.current;
+    if (!el) return;
+    const colWidth = el.querySelector('[data-col]')?.getBoundingClientRect().width ?? 300;
+    el.scrollTo({ left: idx * (colWidth + 16), behavior: 'smooth' });
+  }, []);
 
   const filtered = useMemo(
     () => (filter === 'all' ? tasks : tasks.filter((t2) => t2.priority === filter)),
@@ -176,18 +194,23 @@ export function TaskSection({
       </div>
 
       {/* Board */}
-      <div className="grid grid-cols-3 gap-4">
-        {STATUSES.map((status) => {
+      <div
+        ref={boardRef}
+        onScroll={onBoardScroll}
+        className="grid grid-cols-1 gap-4 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scroll-snap-type:x_mandatory] [scrollbar-width:none] md:grid-cols-3 md:overflow-visible md:[scroll-snap-type:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {STATUSES.map((status, idx) => {
           const items = filtered.filter((t2) => t2.status === status);
           const col = COLUMN_THEME[status];
           return (
             <div
               key={status}
+              data-col
               onDragOver={(e) => { e.preventDefault(); setDragOver(status); }}
               onDragLeave={() => setDragOver(null)}
               onDrop={() => handleDrop(status)}
               className={cn(
-                'rounded-2xl border p-3 transition-colors',
+                'snap-start rounded-2xl border p-3 transition-colors [flex:0_0_86vw] [max-w:380px] md:[flex:none] md:max-w-none',
                 dragOver === status ? 'border-violet-300 bg-violet-50 dark:bg-violet-900/20' : theme === 'dark' ? 'border-gray-700 bg-gray-800/30' : 'border-gray-200 bg-gray-50/50',
               )}
             >
@@ -216,6 +239,21 @@ export function TaskSection({
             </div>
           );
         })}
+      </div>
+
+      {/* Mobile dots */}
+      <div className="mt-3 flex justify-center gap-2 md:hidden">
+        {STATUSES.map((status, idx) => (
+          <button
+            key={status}
+            onClick={() => scrollToCol(idx)}
+            aria-label={`go to ${status}`}
+            className={cn(
+              'h-2 w-2 rounded-full transition-all',
+              activeCol === idx ? 'scale-130 bg-violet-600' : 'bg-gray-300 dark:bg-gray-600',
+            )}
+          />
+        ))}
       </div>
 
       {/* Modal */}

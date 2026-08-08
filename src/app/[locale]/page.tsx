@@ -1,10 +1,9 @@
 'use client';
 
-import { useCallback, useState, useTransition } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { Globe, Moon, Sun } from 'lucide-react';
-import { useRouter, usePathname } from '@/i18n/routing';
+import { Moon, Sun } from 'lucide-react';
 
 import Background from '@/components/Background';
 import { TaskSection } from '@/components/tasks/TaskSection';
@@ -28,14 +27,11 @@ const TIMER_STATES: Array<{ key: TimerState }> = [
 import { use } from 'react';
 
 export default function Pomodoro({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = use(params);
+  use(params);
   const [theme, setTheme] = useLocalStorage<ThemeMode>('pomodoro-theme', 'light');
   const { toasts, addToast } = useToasts();
   const tPage = useTranslations('Page');
   const tTimer = useTranslations('Timer');
-  const router = useRouter();
-  const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
 
   const timer = useTimer({
     onComplete: (label) => addToast(tTimer('completed', { label }), 'success'),
@@ -82,20 +78,6 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
             </div>
 
             <div className="flex gap-2 sm:gap-3">
-              <button
-                onClick={() => {
-                  startTransition(() => {
-                    const nextLocale = locale === 'zh' ? 'en' : 'zh';
-                    router.replace(pathname, { locale: nextLocale });
-                  });
-                }}
-                disabled={isPending}
-                className={`rounded-full p-3 transition-colors ${theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white/50 text-gray-700 hover:bg-white/80'}`}
-                aria-label={tPage('languageToggle')}
-                title={tPage('languageToggle')}
-              >
-                <Globe />
-              </button>
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`rounded-full p-3 transition-colors ${theme === 'dark' ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-white/50 text-gray-700 hover:bg-white/80'}`}

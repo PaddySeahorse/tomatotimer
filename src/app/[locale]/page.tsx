@@ -43,13 +43,6 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
     addToast(result.message, result.success ? 'success' : 'info');
   }, [addToast, timer]);
 
-  const handleStartTask = useCallback(
-    (task: { plannedTime?: number }) => {
-      timer.startTaskTimer(task.plannedTime);
-    },
-    [timer]
-  );
-
   return (
     <>
       <Background theme={theme} timerState={timer.state} />
@@ -150,16 +143,15 @@ export default function Pomodoro({ params }: { params: Promise<{ locale: string 
             <TaskSection
               theme={theme}
               tasks={tasks.tasks}
-              expandedTaskId={tasks.expandedTaskId}
-              showTaskInput={tasks.showTaskInput}
+              editingId={tasks.editingId}
+              isModalOpen={tasks.isModalOpen}
               taskDraft={tasks.taskDraft}
-              onToggleTaskInput={tasks.toggleTaskInput}
-              onUpdateTaskDraft={tasks.updateTaskDraft}
-              onAddTask={tasks.addTask}
-              onToggleTask={tasks.toggleTask}
-              onToggleTaskExpand={tasks.toggleTaskExpand}
+              onOpenModal={tasks.openModal}
+              onCloseModal={tasks.closeModal}
+              onUpdateDraft={tasks.updateDraft}
+              onSubmitTask={tasks.submitTask}
+              onMoveTask={tasks.moveTask}
               onDeleteTask={tasks.deleteTask}
-              onStartTask={handleStartTask}
             />
           </div>
 

@@ -14,18 +14,7 @@ const initialDraft: TaskDraft = {
   assignee: '1',
 };
 
-const seedTasks: Task[] = [
-  { id: '1', title: 'Design the new login page', desc: 'Complete the login UI, including mobile adaptation, dark mode and high-contrast mode.', priority: 'high', status: 'todo', tag: 'design', due: '2026-07-28', assignee: '2', createdAt: Date.now() },
-  { id: '2', title: 'Write API documentation', desc: 'Document the RESTful API for the user management module, including auth and rate limiting.', priority: 'medium', status: 'todo', tag: 'dev', due: '2026-08-02', assignee: '1', createdAt: Date.now() },
-  { id: '3', title: 'Competitor analysis report', desc: 'Research 3 competitors and output a comparison matrix with recommendations.', priority: 'medium', status: 'todo', tag: 'research', due: '2026-08-05', assignee: '3', createdAt: Date.now() },
-  { id: '4', title: 'Build the frontend component library', desc: 'Set up Button, Input, Modal, Select base components with docs and Storybook.', priority: 'high', status: 'progress', tag: 'dev', due: '2026-07-30', assignee: '1', createdAt: Date.now() },
-  { id: '5', title: 'User requirements review meeting', desc: 'Discuss Q3 priorities with the product team and confirm milestones.', priority: 'low', status: 'progress', tag: 'meeting', due: '2026-07-25', assignee: '4', createdAt: Date.now() },
-  { id: '6', title: 'Database performance optimization', desc: 'Analyze slow query logs, add composite indexes, optimize JOINs. Target P99 < 50ms.', priority: 'high', status: 'progress', tag: 'dev', due: '2026-07-26', assignee: '5', createdAt: Date.now() },
-  { id: '7', title: 'Fix login page style bug', desc: 'Safari shows input borders incorrectly; add -webkit-appearance fix.', priority: 'medium', status: 'done', tag: 'bug', due: '2026-07-22', assignee: '1', createdAt: Date.now() },
-  { id: '8', title: 'Weekly project report', desc: 'Summarize this week\'s progress, risks and next week\'s plan for management.', priority: 'low', status: 'done', tag: 'general', due: '2026-07-21', assignee: '3', createdAt: Date.now() },
-  { id: '9', title: 'Deploy CI/CD pipeline', desc: 'Configure GitHub Actions for auto testing, quality checks and production deploy.', priority: 'medium', status: 'done', tag: 'dev', due: '2026-07-20', assignee: '5', createdAt: Date.now() },
-  { id: '10', title: 'Usability test', desc: 'Recruit 5 users for core-flow testing and collect pain points.', priority: 'high', status: 'todo', tag: 'research', due: '2026-08-08', assignee: '4', createdAt: Date.now() },
-];
+const seedTasks: Task[] = [];
 
 export function useTasks() {
   const [tasks, setTasks] = useLocalStorage<Task[]>(STORAGE_KEY, seedTasks);
